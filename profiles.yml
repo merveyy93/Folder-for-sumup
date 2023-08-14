@@ -1,0 +1,11 @@
+merve:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: merveyasa
+      password: sy1968
+      port: 5433
+      dbname: merveyasa
+      schema: dbt_merve

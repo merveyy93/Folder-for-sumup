@@ -1,0 +1,63 @@
+version: 2
+
+models:
+
+  - name: fact_store_transaction_first
+    description: "First 5 transactions for each store."
+    columns:
+      - name: store_id
+        tests:
+          - not_null
+      - name: transaction_happened_at
+        tests:
+          - not_null
+
+  - name: fact_store_transaction_view
+    description: "Detailed view of store transactions."
+    columns:
+      - name: device_type
+        tests:
+          - not_null
+          - between:
+              min: 1
+              max: 5
+      - name: product_sku
+        tests:
+          - not_null
+
+      - name: transaction_amount
+        tests:
+          - not_null
+          - greater_than:
+              value: 0
+
+  - name: fact_product_agg
+    description: "Aggregated view of products based on transactions."
+    columns:
+      - name: product_name
+        description: "Name of the product involved in the transaction"
+        tests:
+          - not_null
+
+      - name: product_sku
+        description: "Stock keeping unit, unique identifier for the product"
+        tests:
+          - not_null
+          - unique
+
+      - name: transactions_count
+        description: "Count of transactions for the product"
+        tests:
+          - not_null
+          - greater_than:
+              value: 0
+
+      - name: total_transaction_amount
+        description: "Total transaction amount in euros for the product"
+        tests:
+          - not_null
+          - greater_than:
+              value: 0
+
+
+

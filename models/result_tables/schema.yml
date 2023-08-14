@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: avg_transaction_amount
+    description: "Average transaction amount per store typology and country."
+    columns:
+      - name: store_typology
+        tests:
+          - not_null
+      - name: store_country
+        tests:
+          - not_null
+      - name: average_transaction_amount
+        tests:
+          - not_null
+          - greater_than:
+              value: 0
+
+  - name: inc_first_five_transaction
+    description: "Average time for a store to perform its 5 first transactions."
+    columns:
+      - name: store_id
+        tests:
+          - not_null
+          - unique
+
+  - name: pct_transaction
+    description: "Percentage of transactions per device type."
+    columns:
+      - name: device_type
+        tests:
+          - not_null
+      - name: percentage
+        tests:
+          - not_null
+          - between:
+              min: 0
+              max: 100
+
+  - name: top_ten_products
+    description: "Top 10 products sold."
+    columns:
+      - name: product_name
+        tests:
+          - not_null
+      - name: product_sku
+        tests:
+          - not_null
+      - name: total_transaction_amount
+        tests:
+          - not_null
+      - name: transactions_count
+        tests:
+          - not_null
+
+
+  - name: top_ten_stores
+    description: "Top 10 stores per transacted amount."
+    columns:
+      - name: store_id
+        tests:
+          - not_null
+      - name: total_transaction_amount
+        tests:
+          - not_null
+          - greater_than:
+              value: 0
+
+

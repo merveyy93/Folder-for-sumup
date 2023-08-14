@@ -1,0 +1,42 @@
+name: 'sumup'
+version: '1.0'
+config-version: 2
+
+profile: 'merve'
+
+models:
+  my_project:
+    raw_data:
+      enabled: true
+      materialized: incremental
+      raw_stores:
+        materialized: incremental
+      raw_devices:
+        materialized: incremental
+      raw_transactions:
+        materialized: incremental
+    fact:
+      enabled: true
+      materialized: incremental
+      fact_product_agg:
+        materialized: incremental
+      fact_store_transaction_first:
+        materialized: incremental
+      fact_store_transaction_view:
+        materialized: incremental
+    result_tables:
+      enabled: true
+      materialized: table
+      avg_transaction_amount:
+        materialized: incremental
+      inc_first_five_transaction:
+        materialized: table
+      pct_transaction:
+        materialized: incremental
+      top_ten_products:
+        materialized: table
+      top_ten_stores:
+        materialized: table
+
+vars:
+  database_name: 'merveyasa'

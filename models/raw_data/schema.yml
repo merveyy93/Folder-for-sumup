@@ -1,0 +1,121 @@
+version: 2
+
+
+sources:
+  - name: public
+    database: merveyasa
+    schema: public
+    tables:
+      - name: stores
+        identifier: 'stores'
+      - name: devices
+        identifier: 'devices'
+      - name: transactions
+        identifier: 'transactions'
+
+models:
+  - name: raw_stores
+    description: "Information about the physical locations where business happens, classified by different typology."
+    columns:
+      - name: metadata_timestamp
+        description: "Timestamp for metadata tracking"
+        tests:
+          - not_null
+      - name: store_id
+        description: "Unique identifier for the store"
+        tests:
+          - unique
+          - not_null:
+              severity: 'error'
+      - name: store_name
+        description: "Name of the store"
+      - name: store_address
+        description: "Address of the store"
+      - name: store_city
+        description: "City where the store is located"
+      - name: store_country
+        description: "Country where the store is located"
+      - name: store_created_at
+        description: "Timestamp for when the store was created"
+      - name: store_typology
+        description: "Typology classification of the store"
+      - name: customer_id
+        description: "Unique identifier for the customer owning the store"
+
+  - name: raw_devices
+    description: "Information about different types of devices used to perform transactions, tied up to a specific store."
+    columns:
+      - name: metadata_timestamp
+        description: "Timestamp for metadata tracking"
+      - name: device_id
+        description: "Unique identifier for the device"
+        tests:
+          - unique
+          - not_null:
+              severity: 'error'
+      - name: device_type
+        description: "Type of device, ranging from 1 to 5"
+        tests:
+          - not_null
+          - between:
+              min: 1
+              max: 5
+      - name: store_id
+        description: "Store ID that the device is associated with"
+        tests:
+          - not_null:
+              severity: 'error'
+
+  - name: raw_transactions
+    description: "Details of transactions made using the provided devices, in euros, for products sold inside the store."
+    columns:
+      - name: metadata_timestamp
+        description: "Timestamp for metadata tracking"
+        tests:
+          - not_null
+      - name: transaction_id
+        description: "Unique identifier for the transaction"
+        tests:
+          - unique
+          - not_null
+      - name: device_id
+        description: "Device ID used for the transaction"
+        tests:
+          - not_null:
+              severity: 'error'
+      - name: product_name
+        description: "Name of the product involved in the transaction"
+        tests:
+          - not_null
+      - name: product_sku
+        description: "Stock keeping unit, unique identifier for the product"
+        tests:
+          - not_null
+      - name: category_name
+        description: "Category name for the product"
+      - name: transaction_amount
+        description: "Amount transacted in euros"
+        tests:
+          - not_null
+          - greater_than:
+              value: 0
+      - name: transaction_status
+        description: "Status of the transaction"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['accepted', 'refused','cancelled']
+      - name: card_number
+        description: "Card number used for the transaction"
+      - name: cvv
+        description: "CVV code for the card used in the transaction"
+      - name: transaction_created_at
+        description: "Timestamp for when the transaction was created"
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "transaction_created_at <= transaction_happened_at"
+              severity: 'warn'
+      - name: transaction_happened_at
+        description: "Timestamp for when the transaction actually happened"
+
